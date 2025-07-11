@@ -62,20 +62,17 @@ variable "github_token" {
   description = "GitHub personal access token"
   type        = string
   sensitive   = true
-  default     = ""
 }
 
 variable "github_webhook_secret" {
   description = "GitHub webhook secret"
   type        = string
   sensitive   = true
-  default     = ""
 }
 
 variable "atlantis_github_user" {
   description = "GitHub user for Atlantis"
   type        = string
-  default     = "AugustasV"
 }
 
 variable "vpc_cidr" {

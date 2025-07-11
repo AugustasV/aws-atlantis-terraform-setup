@@ -1,0 +1,26 @@
+version: 3
+workflows:
+  custom:
+    plan:
+      steps:
+        - env:
+            name: TF_VAR_github_org
+            value: $GITHUB_ORG
+        - env:
+            name: TF_VAR_github_token
+            value: $GITHUB_TOKEN
+        - env:
+            name: TF_VAR_github_webhook_secret
+            value: $GITHUB_WEBHOOK_SECRET
+        - env:
+            name: TF_VAR_atlantis_github_user
+            value: $ATLANTIS_GITHUB_USER
+        - run: terraform plan -input=false -refresh -out $PLANFILE
+    apply:
+      steps:
+        - run: terraform apply -input=false $PLANFILE
+
+projects:
+  - name: default
+    dir: .
+    workflow: custom
