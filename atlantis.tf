@@ -44,13 +44,6 @@ resource "helm_release" "atlantis" {
         type = "LoadBalancer"
         port = 4528
       }
-      repoConfig = <<-EOT
-      repos:
-        - id: /.*/
-          apply_requirements: [approved, mergeable]
-          allowed_overrides: [apply_requirements, workflow]
-          allow_custom_workflows: true
-       EOT
       ingress = {
         enabled = false
       }
@@ -83,6 +76,10 @@ resource "helm_release" "atlantis" {
       environment = {
         ATLANTIS_DEFAULT_TF_VERSION = "1.8.0"
         ATLANTIS_REPO_ALLOWLIST     = "github.com/${var.github_org}/*"
+        ATLANTIS_GITHUB_USER   = var.atlantis_github_user
+        GITHUB_TOKEN  = var.github_token
+        GITHUB_WEBHOOK_SECRET = var.github_webhook_secret
+        GITHUB_ORG = var.github_org
       }
 
       # Configure AWS credentials for Atlantis
