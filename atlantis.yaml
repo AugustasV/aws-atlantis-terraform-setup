@@ -9,6 +9,9 @@ workflows:
               - "-var=github_token=$GITHUB_TOKEN"
               - "-var=github_webhook_secret=$GITHUB_WEBHOOK_SECRET"
               - "-var=atlantis_github_user=$ATLANTIS_GITHUB_USER"
+              - "-var=AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
+              - "-var=AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+              - "-var=AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
     apply:
       steps:
         - apply

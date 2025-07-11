@@ -35,6 +35,9 @@ resource "kubernetes_secret" "atlantis_secrets" {
     GITHUB_TOKEN  = var.github_token
     GITHUB_WEBHOOK_SECRET = var.github_webhook_secret
     GITHUB_ORG = var.github_org
+    AWS_DEFAULT_REGION = var.aws_region
+    AWS_SECRET_ACCESS_KEY = var.aws_secrets
+    AWS_ACCESS_KEY_ID = var.aws_access
   }
 }
 
@@ -75,6 +78,27 @@ resource "helm_release" "atlantis" {
         secretKeyRef = {
           name = kubernetes_secret.atlantis_secrets.metadata[0].name
           key  = "GITHUB_ORG"
+        }
+      },
+      {
+        name = "AWS_DEFAULT_REGION"
+        secretKeyRef = {
+          name = kubernetes_secret.atlantis_secrets.metadata[0].name
+          key  = "AWS_DEFAULT_REGION"
+        }
+      },
+      {
+        name = "AWS_SECRET_ACCESS_KEY"
+        secretKeyRef = {
+          name = kubernetes_secret.atlantis_secrets.metadata[0].name
+          key  = "AWS_SECRET_ACCESS_KEY"
+        }
+      },
+      {
+        name = "AWS_ACCESS_KEY_ID"
+        secretKeyRef = {
+          name = kubernetes_secret.atlantis_secrets.metadata[0].name
+          key  = "AWS_ACCESS_KEY_ID"
         }
       }
     ]
@@ -133,6 +157,8 @@ resource "helm_release" "atlantis" {
       aws = {
         credentials = ""
         config      = ""
+      }
+      aws = {
       }
 
       # Security context
