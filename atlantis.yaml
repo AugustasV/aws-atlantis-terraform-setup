@@ -3,6 +3,8 @@ workflows:
   custom:
     plan:
       steps:
+        - init
+        - plan
         - env:
             name: TF_VAR_github_org
             value: $GITHUB_ORG
