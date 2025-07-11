@@ -22,6 +22,22 @@ resource "kubernetes_secret" "atlantis_github" {
   }
 }
 
+resource "kubernetes_secret" "atlantis_secrets" {
+  metadata {
+    name      = "atlantis-secrets"
+    namespace = "atlantis"
+  }
+
+  type = "Opaque"
+
+  data = {
+    ATLANTIS_GITHUB_USER = var.atlantis_github_user
+    GITHUB_TOKEN  = var.github_token
+    GITHUB_WEBHOOK_SECRET = var.github_webhook_secret
+    GITHUB_ORG = var.github_org
+  }
+}
+
 # Helm release for Atlantis
 resource "helm_release" "atlantis" {
   name       = "atlantis"
@@ -31,7 +47,43 @@ resource "helm_release" "atlantis" {
   version    = "5.2.0"
 
   values = [
-    yamlencode({
+    yamlencode({ 
+    environmentSecrets = [
+      {
+        name = "GITHUB_TOKEN"
+        secretKeyRef = {
+          name = kubernetes_secret.atlantis_secrets.metadata[0].name
+          key  = "GITHUB_TOKEN"
+        }
+      },
+      {
+        name = "GITHUB_WEBHOOK_SECRET"
+        secretKeyRef = {
+          name = kubernetes_secret.atlantis_secrets.metadata[0].name
+          key  = "GITHUB_WEBHOOK_SECRET"
+        }
+      },
+      {
+        name = "ATLANTIS_GITHUB_USER"
+        secretKeyRef = {
+          name = kubernetes_secret.atlantis_secrets.metadata[0].name
+          key  = "ATLANTIS_GITHUB_USER"
+        }
+      },
+      {
+        name = "GITHUB_ORG"
+        secretKeyRef = {
+          name = kubernetes_secret.atlantis_secrets.metadata[0].name
+          key  = "GITHUB_ORG"
+        }
+      }
+    ]
+      repoConfig = <<-EOT
+        repos:
+          - id: /.*/
+            allowed_overrides: [workflow]
+            allow_custom_workflows: true
+      EOT
       orgAllowlist = "github.com/${var.github_org}/*"
       
       github = {
@@ -72,14 +124,9 @@ resource "helm_release" "atlantis" {
       }
 
       defaultTFVersion = "1.8.0"
-
       environment = {
         ATLANTIS_DEFAULT_TF_VERSION = "1.8.0"
         ATLANTIS_REPO_ALLOWLIST     = "github.com/${var.github_org}/*"
-        ATLANTIS_GITHUB_USER   = var.atlantis_github_user
-        GITHUB_TOKEN  = var.github_token
-        GITHUB_WEBHOOK_SECRET = var.github_webhook_secret
-        GITHUB_ORG = var.github_org
       }
 
       # Configure AWS credentials for Atlantis
