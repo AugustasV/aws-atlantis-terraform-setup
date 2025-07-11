@@ -1,0 +1,18 @@
+version: 3
+workflows:
+  custom:
+    plan:
+      steps:
+        - init
+        - plan:
+            extra_args:
+              - "-var=github_token=$GITHUB_TOKEN"
+              - "-var=github_webhook_secret=$GITHUB_WEBHOOK_SECRET"
+              - "-var=atlantis_github_user=$ATLANTIS_GITHUB_USER"
+    apply:
+      steps:
+        - apply
+projects:
+  - name: default
+    dir: .
+    workflow: custom

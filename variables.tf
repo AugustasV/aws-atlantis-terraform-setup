@@ -55,6 +55,7 @@ variable "node_group_desired_size" {
 variable "github_org" {
   description = "GitHub organization or username"
   type        = string
+  default     = ""
 }
 
 variable "github_token" {
