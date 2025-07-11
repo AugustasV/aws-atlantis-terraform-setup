@@ -81,12 +81,12 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 variable "aws_secrets" {
-  description = "aws_secrets"
+  description = "aws_secrets key"
   type        = string
   sensitive   = true
 }
 variable "aws_access" {
-  description = "aws_access"
+  description = "aws_access key"
   type        = string
   sensitive   = true
 }
