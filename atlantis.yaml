@@ -2,27 +2,16 @@ version: 3
 workflows:
   custom:
     plan:
-      extra_args: ["-var", "github_token=$GITHUB_TOKEN", "-var", "github_webhook_secret=$GITHUB_WEBHOOK_SECRET", "-var", "atlantis_github_user=$ATLANTIS_GITHUB_USER"]
       steps:
         - init
-        - plan
-        - env:
-            name: TF_VAR_github_org
-            value: $GITHUB_ORG
-        - env:
-            name: TF_VAR_github_token
-            value: $GITHUB_TOKEN
-        - env:
-            name: TF_VAR_github_webhook_secret
-            value: $GITHUB_WEBHOOK_SECRET
-        - env:
-            name: TF_VAR_atlantis_github_user
-            value: $ATLANTIS_GITHUB_USER
-        - run: terraform plan -input=false -refresh -out $PLANFILE
+        - plan:
+            extra_args:
+              - "-var=github_token=$GITHUB_TOKEN"
+              - "-var=github_webhook_secret=$GITHUB_WEBHOOK_SECRET"
+              - "-var=atlantis_github_user=$ATLANTIS_GITHUB_USER"
     apply:
       steps:
-        - run: terraform apply -input=false $PLANFILE
-
+        - apply
 projects:
   - name: default
     dir: .
