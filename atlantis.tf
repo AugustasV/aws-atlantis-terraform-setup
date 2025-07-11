@@ -44,7 +44,13 @@ resource "helm_release" "atlantis" {
         type = "LoadBalancer"
         port = 4528
       }
-
+      repoConfig = <<-EOT
+      repos:
+        - id: /.*/
+          apply_requirements: [approved, mergeable]
+          allowed_overrides: [apply_requirements, workflow]
+          allow_custom_workflows: true
+       EOT
       ingress = {
         enabled = false
       }
